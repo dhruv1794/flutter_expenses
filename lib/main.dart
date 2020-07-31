@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 
 import './widgets/transaction_list.dart';
@@ -7,7 +8,14 @@ import './widgets/chart.dart';
 
 import './models/transaction.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitDown,
+    DeviceOrientation.portraitUp,
+  ]);
+  runApp(MyApp());
+} 
 
 class MyApp extends StatelessWidget {
   @override
@@ -91,8 +99,7 @@ List<Transaction> get _recentTransaction  {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
+    final appBar = AppBar(
         title: Text(
           'Expense Tracker',
           style: TextStyle(fontFamily: 'OpenSans')
@@ -104,7 +111,9 @@ List<Transaction> get _recentTransaction  {
             onPressed: ()=>_startAddNewTransaction(context),
           )
         ],
-      ),
+      );
+    return Scaffold(
+      appBar: appBar,
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: ()=>_startAddNewTransaction(context),
@@ -116,9 +125,13 @@ List<Transaction> get _recentTransaction  {
           children: <Widget>[
             Container(
               width: double.infinity,
+              height: (MediaQuery.of(context).size.height  - appBar.preferredSize.height - MediaQuery.of(context).padding.top) * 0.3,
               child:Chart(_recentTransaction),
               ),
-             TransactionList(_userTransaction, _deleteTransaction)
+             Container(
+               height: (MediaQuery.of(context).size.height  - appBar.preferredSize.height - MediaQuery.of(context).padding.top) * 0.7,
+               child: TransactionList(_userTransaction, _deleteTransaction)
+             )
           ],
         ),
       ),
