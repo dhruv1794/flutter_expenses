@@ -23,6 +23,9 @@ class MyApp extends StatelessWidget {
             fontFamily: 'Quicksand',
             fontWeight: FontWeight.bold,
             fontSize: 18
+          ),
+          button: TextStyle(
+            color: Colors.white
           )
         ),
         appBarTheme: AppBarTheme(
@@ -50,15 +53,21 @@ class _MyHomePageState extends State<MyHomePage> {
     // Transaction(id: 't1', amount: 69.99, title: 'Shoes', date: DateTime.now()),
     // Transaction(id: 't2', amount: 19.99, title: 'Grocerry', date: DateTime.now()),
   ];
-  void _addTransaction(String title, double amount){
-    final newTransaction = Transaction(title: title, amount:amount, date: DateTime.now(), id:DateTime.now().toString());
+  void _addTransaction(String title, double amount, DateTime chosenDate){
+    final newTransaction = Transaction(title: title, amount:amount, date: chosenDate, id:DateTime.now().toString());
     setState(() {
           _userTransaction.add(newTransaction);
     });
   }
- final amountController = TextEditingController();
 
- final titleController = TextEditingController();
+  void _deleteTransaction(String id) {
+    setState(() {
+      _userTransaction.removeWhere((element){
+        return element.id == id;
+      });
+    });
+  }
+
 
 List<Transaction> get _recentTransaction  {
    return _userTransaction.where((element){
@@ -109,7 +118,7 @@ List<Transaction> get _recentTransaction  {
               width: double.infinity,
               child:Chart(_recentTransaction),
               ),
-             TransactionList(_userTransaction)
+             TransactionList(_userTransaction, _deleteTransaction)
           ],
         ),
       ),
